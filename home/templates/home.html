@@ -1,0 +1,48 @@
+{% extends 'base_home.html' %}
+{% load static %}
+
+{% block content %}
+{% comment %} block main big container start design {% endcomment %}
+<div class="container start_design_container">
+ 	<div class="container start_design_contents">
+		<h1>Commerce.<br>Not Complicated.</h1>
+		<p class="">
+			TeeShop is a free end to end solution for your 
+			e-commerce business. Create &amp; sell online.
+		</p>
+		<a href="{% url 'homeDashboard' %}"> <button type="button" class="btn btn-light">Start Design</button></a>
+	</div>
+</div>
+{% comment %} container Recommendations product {% endcomment %}
+<div class="container recomended_products">
+	<h2>Recommendations For You</h2>
+	<div class="row">
+	{% for product in products%}
+		<div class="col-md-3 col-sm-6">
+			<div class="product-grid">
+				<div class="product-image">
+					<img class="pic-1" src="{{product.mockupImg.url}}">
+				</div>
+				<div class="product-content">
+					{% comment %} <h3 class="title">
+						<a class="title-name">{{product.name}}</a>
+					</h3> {% endcomment %}
+					<h5>
+						<a href="{%  url 'product_details' product.id %}" class="title-name">{{product.title}}</a>
+					<h5>
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+	</div>
+</div>
+{% comment %} container shop  {% endcomment %}
+<div class="container shop">
+	<a href="#">
+		<img class="img-fluid" src="{% static 'images/shop.png' %}"/>
+		<img class="img-fluid shop_img_mobile" src="{% static 'images/shop_big.jpg' %}"/>
+	</a>
+</div>
+
+
+{% endblock content %}

@@ -1,0 +1,72 @@
+{% extends 'base_dashboard.html' %}
+{% load static %}
+
+
+
+{% block nav-Listing %}
+  <a class="sidebar_link active" href="{% url 'listingDashboard' %}">
+      <li class="menu__item">
+          <span class="menu__icon">
+              <i class="fa fa-th-list" aria-hidden="true"></i>
+          </span>Listing
+      </li>
+  </a>
+{% endblock nav-Listing %}
+
+{% block content %}
+<style>
+a.listing-icon {
+    text-decoration: none;
+    color: #6c757d66;
+}
+svg.svg-inline--fa.fa-trash.fa-w-14:hover{
+    color: orange;
+}
+th.tb-data, td.tb-data {
+  text-align: -webkit-center;
+}
+</style>
+
+<main class="main">
+  <header class="main__header">
+      <div class="main__user">
+         <div class="main__avatar">
+            <img src="https://assets.codepen.io/2709552/small-avatar.png" />
+         </div>
+         <div class="main__title">
+            <h5>{{request.user}}</h5>
+         </div>
+      </div>
+   </header>
+  <div class="header">
+    {% comment %} <h1>Listed Products</h1> {% endcomment %}
+  </div>
+    <table class="table">
+        <thead>
+            <tr>
+              <th class="tb-data" scope="col"></th>
+              <th class="tb-data" scope="col">Units sold</th>
+              {% comment %} <th scope="col">Units Sold</th> {% endcomment %}
+              <th class="tb-data" scope="col"></th>
+              {% comment %} <th scope="col"></th> {% endcomment %}
+            </tr>
+        </thead>
+      {% for product in product_list%}
+        <tbody>
+            <tr>
+              <td class="tb-data"><img style="width:100px" src="{{ product.mockupImg.url }}"></img><p>{{ product.title }}</p></td>
+              <td class="tb-data">0</td>
+              <td class="tb-data">
+                <a class="listing-icon" onClick="return (confirm('are you sure you want to delete this product'))" href={% url 'delete_product' product.id %}><i class="fas fa-trash" title="Remove"></i></a>
+                <a class="listing-icon" href="#"><i class="fas fa-edit" title="Edit"></i></a>
+              </td>
+            </tr>
+        </tbody>
+      {% endfor %}
+    </table>
+  </div>
+</main>
+
+{% endblock content %}
+
+{% block js %}{% endblock js %}

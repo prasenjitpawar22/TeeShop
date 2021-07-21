@@ -1,0 +1,12 @@
+{% block main-header %}
+      <header class="main__header">
+         <div class="main__user">
+            <div class="main__avatar">
+               <img src="https://assets.codepen.io/2709552/small-avatar.png" />
+            </div>
+            <div class="main__title">
+               <h5>{{request.user}}</h5>
+            </div>
+         </div>
+      </header>
+{% endblock main-header %}

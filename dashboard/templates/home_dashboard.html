@@ -1,0 +1,103 @@
+{% extends 'base_dashboard.html' %}
+{% load static %}
+
+{% block nav-Home %}
+   <a class="sidebar_link active" href="{% url 'homeDashboard' %}">
+      <li class="menu__item">
+         <span class="menu__icon">
+            <i class="fas fa-home"></i>
+         </span>Main             
+      </li>
+   </a>
+{% endblock nav-Home %}
+
+{% block content %}
+<main class="main">
+   <header class="main__header">
+      <div class="main__user">
+         <div class="main__avatar">
+            <img src="https://assets.codepen.io/2709552/small-avatar.png" />
+         </div>
+         <div class="main__title">
+            <h5>{{request.user}}</h5>
+         </div>
+      </div>
+   </header>
+   
+   {% comment %} section block see the numbers {% endcomment %}
+   <!--Section: Block Content-->
+   <section>
+      <!--Grid row-->
+      <div class="row">
+         <!--Grid column-->
+         <div class="col-lg-4 col-md-12 mb-4">
+            <!-- Card -->
+            <div class="card">
+               <div class="card-body">
+                  <p class="text-uppercase small mb-2"><strong>Your Orders</strong></p>
+                  <h5 class="font-weight-bold mb-0">
+                     0
+                     <small class="text-success ml-2">
+                     <i class="fas fa-arrow-up fa-sm pr-1"></i>0</small>
+                  </h5>
+                  <hr>
+                  {% comment %} <p class="text-uppercase text-muted small mb-2"><strong>Previous Orders</strong></p>
+                  <h5 class="font-weight-bold text-muted mb-0">
+                     0
+                  </h5> {% endcomment %}
+               </div>
+            </div>
+            <!-- Card -->
+         </div>
+         <!--Grid column-->
+         <!--Grid column-->
+         <div class="col-lg-4 col-md-6 mb-4">
+            <!-- Card -->
+            <div class="card">
+               <div class="card-body">
+                  <p class="text-uppercase small mb-2"><strong>Profit</strong></p>
+                  <h5 class="font-weight-bold mb-0">
+                     0
+                     <small class="text-success ml-2">
+                     <i class="fas fa-arrow-up fa-sm pr-1"></i>0</small>
+                  </h5>
+                  <hr>
+                  {% comment %} <p class="text-uppercase text-muted small mb-2"><strong>Previous period</strong></p>
+                  <h5 class="font-weight-bold text-muted mb-0">
+                     354
+                  </h5> {% endcomment %}
+               </div>
+            </div>
+            <!-- Card -->
+         </div>
+         <!--Grid column-->
+         <!--Grid column-->
+         <div class="col-lg-4 col-md-6 mb-4">
+            <!-- Card -->
+            <div class="card">
+            <div class="card-body">
+               <p class="text-uppercase small mb-2"><strong>To be paid</strong></p>
+               <h5 class="font-weight-bold mb-0">
+                  0
+                  <small class="text-danger ml-2">
+                  <i class="fas fa-arrow-down fa-sm pr-1"></i>0</small>
+               </h5>
+               <hr>
+               {% comment %} <p class="text-uppercase text-muted small mb-2"><strong>Previous period</strong></p>
+               <h5 class="font-weight-bold text-muted mb-0">
+                  186
+               </h5> {% endcomment %}
+            </div>
+            </div>
+            <!-- Card -->
+         </div>
+         <!--Grid column-->
+      </div>
+      <!--Grid row-->
+   </section>
+   <!--Section: Block Content-->
+
+
+</main>
+
+{% endblock content %}

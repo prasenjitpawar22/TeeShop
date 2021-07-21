@@ -1,0 +1,779 @@
+{% comment %} {% extends 'base_dashboard.html' %} {% endcomment %}
+{% load static %}
+
+{% block headLinks %}
+
+{% comment %} save div as image {% endcomment %}
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+{% comment %} canvg {% endcomment %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/canvg/3.0.7/umd.js"></script> 
+<script src="https://cdn.jsdelivr.net/npm/canvg@3.0.7/lib/index.min.js"></script> 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/canvg/1.3/canvg.js"></script> 
+
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"/>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+
+{% endblock headLinks %}
+{% block customStyle %}
+<link rel="stylesheet" href="{% static 'css/design_dashboard.css' %}">
+{% endblock customStyle %}
+
+
+{% block sidebar %}{% endblock sidebar %}
+{% block navbar %}{% endblock navbar %}
+
+{% block no-wrapper %}
+<div id="wrapper">
+	<div id="sidebar_options">
+		<form method="POST" action="" enctype="multipart/form-data"	> {% csrf_token %}
+			<ul id="ul_options">
+				<li class="edit"> 
+					<h1>Desgin Your Product</h1>
+					{% comment %} <input type="text" id="product-name" name="name" value=" t-shirt"> {% endcomment %}
+					{{form.name}}
+					{{form.user}}
+					{{form.mockupImg}}
+					{{form.mockupData}}
+					<hr>
+				</li>
+
+				{% comment %} add product image {% endcomment %}
+				<li class="edit">
+					<div class="button_outer"> 
+						<div class="btn_upload">
+							{% comment %} <input style="cursor:pointer" type="file" id="upload_file" name="image" required> {% endcomment %}
+							{{form.image}}
+							Add Image
+						</div> 
+						<div class="processing_bar"></div>
+						<div class="success_box"><span class="file_remove">X</span></div>
+					</div>
+					<hr>
+				</li>
+				{% comment %} add product title {% endcomment %}
+				<li class="edit">
+					<div class="product-title"> 
+						<h4>Add product title</h4>
+						{{form.title}}
+					</div>
+					<hr>
+				</li>
+				<li class="edit">
+				{% comment %} ADD product color {% endcomment %}
+					<h4>Choose Product Colors</h4>
+					<p>Select multiple background colors to offer</p>
+					{% comment %} <input type="text" name="colors" id="product_colors"/> {% endcomment %}
+					{{form.colors}}
+					<div class="view-added_color">
+						<div class="select-color" id="select_color">
+							{% comment %} <span class='btn' id="add_color" onclick="add_color_btn()" class="add-color">+</span> {% endcomment %}
+							<div class="color-btn add-color"  onclick="add_color_btn_toggle(this)"><span id="add_sign">+</span></div>
+							<!-- add here colors on click-->
+						</div>
+					</div>
+					<div class="add-multiple-color " id="add_color_block">
+						<ul id="color-ul">
+							<li id="color-li">
+								<div onclick="okColorAdded(this.id)" id="blue" class="color-btn"><span id="blue_span"></span></div>
+								<div onclick="okColorAdded(this.id)" id="brown" class="color-btn"><span id="brown_span"></span></div>
+								<div onclick="okColorAdded(this.id)" id="grey" class="color-btn"><span id="grey_span"></span></div>
+								<div onclick="okColorAdded(this.id)" id="pink" class="color-btn "><span id="pink_span"></span></div>
+								<div onclick="okColorAdded(this.id)" id="purple" class="color-btn "><span id="purple_span"></span></div>
+							</li>
+						</ul>
+					</div>
+					<hr>
+				</li>
+				{% comment %} first image buyer sees {% endcomment %}
+				<li class="edit">
+					<h4>Select First Image Buyers See</h4>
+					<p>Pick your product color<br> default on white color</p>
+					<!--<p>front View on Black</p>-->
+					{% comment %} <input id="main-product-color" type="text" name="view_color" /> {% endcomment %}
+					{{form.view_color}}
+					<div class="" id="view_color">
+
+					</div>
+					<hr>
+				</li>
+				{% comment %} product price {% endcomment %}
+				<li class="edit">
+					<h4>Set Your Price</h4>
+					{% comment %} <input class="price-input" name="price" id="price_input" type="number" min="500" value="700"> {% endcomment %}
+					{{form.price}}
+					{% comment %} <button onclick="onPress()">Check Profit</button> {% endcomment %}
+					
+					<label class="show-profit" id="show_profit">200</label>
+				</li>
+				<li class="edit">
+					<input type="submit" id="submit_btn" value="Create"/>
+					<span onclick="createMockup()" id="mockup-btn">Create MockUp</span>
+ 					<hr>
+				</li>
+			</ul>
+		</form>
+	</div>
+	<div class="container" id="design-page-contents" style="width:100%; height:100%;">
+		<div id="design-page-info">
+			{% comment %} <h1>Design</h1> {% endcomment %}
+			<div class="img-image" id="img_image" style="position:absolute";>
+				<div class="svg-div" id="svg-id" style="position:relative";>
+					<ul class="see-product-color-ul">
+					
+					</ul>
+					<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"  onload="makeDraggable(evt)" viewBox="0 0 369 492" width="242" height="323">
+						<g id="inner" >
+							<!--<image x="0" y="0" class="draggable img-fluid" style="cursor:move; transform: rotate( 0rad ); width:100%; height:100%"
+							   xlink:href="{% static 'cart/images/mars2.png' %}"></image>-->
+						</g>
+					</svg>
+					{% comment %} <div id="imag-div"> {% endcomment %}
+						<img style="width:700px" class="img-fluid" src="{% static 'images/'%}{{product_title}}.png ">
+					{% comment %} </div> {% endcomment %}
+					<div class="hamberger_toggle" onclick="sidebar_toggle(this)">
+						<div class="bar1"></div>
+						<div class="bar2"></div>
+						<div class="bar3"></div>
+						</div>
+					</div>
+					<label class="zoom-value-label">Adjust size</label>
+					<input class="zoom-value-input" type="range" min =".1" max="2" step ="0.010" value="1" oninput="moveSlider(this, 'x')"/>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="mockupFinal"></div>
+	
+
+
+</div>
+{% endblock no-wrapper %}
+
+{% block wrapper %}{% endblock wrapper %}
+
+{% block js %}
+<script>
+document.getElementById("submit_btn").disabled = true;
+
+//----toggle side bar function
+function sidebar_toggle(x) {
+  x.classList.toggle("change");
+  
+  if((x.className=="hamberger_toggle change") ){
+	  $("#sidebar_options").css("display","inline-block");
+  }
+  else{
+	  document.getElementById("sidebar_options").style.display = "none";
+  }
+}
+
+//add image to product
+var btnUpload = $("#upload_file");
+btnOuter = $(".button_outer");
+btnUpload.on("change", function(e){
+
+	var ext = btnUpload.val().split('.').pop().toLowerCase();
+	if($.inArray(ext, ['gif','png','jpg','jpeg', 'svg']) == -1) {
+		//$(".error_msg").text("Not an Image...");
+		alert("no image file");
+	}
+	else{
+		btnOuter.addClass("file_uploading");
+		setTimeout(function(){
+			btnOuter.addClass("file_uploaded");
+		},3000);
+		uploadedFile = URL.createObjectURL(e.target.files[0]);
+		setTimeout(function(){
+			//$("#uploaded_view").append('<img class="show" src="'+uploadedFile+'" />').addClass("show");
+			//alert(uploadedFile);
+
+			const fileList = e.target.files;
+    		console.log(fileList);
+
+			var svgimg = document.createElementNS('http://www.w3.org/2000/svg','image');
+			svgimg.setAttributeNS(null,'height','100%');
+			svgimg.setAttributeNS(null,'width','100%');
+			svgimg.setAttributeNS('http://www.w3.org/1999/xlink','xlink:href', uploadedFile);
+			svgimg.setAttributeNS(null,'x','0');
+			svgimg.setAttributeNS(null,'y','0');
+			svgimg.setAttributeNS(null,'class','draggable img-fluid');
+			svgimg.setAttributeNS(null,'style','cursor:move; transform: rotate( 0rad );');
+
+			svgimg.setAttributeNS(null, 'visibility', 'visible');
+			$("#inner").append(svgimg);
+
+			//$("#inner").append('<image x=0 y=0 class="draggable img-fluid" style="cursor:move; transform: rotate( 0rad );" width:100% height:100% xlink:href="'+uploadedFile+'"></image>');
+		},3500);
+	}
+});
+//remove the image from product 
+//-------remove the image---------
+$(".file_remove").on("click", function(e){
+	$("#inner").empty();
+	$("#uploaded_view").find("img").remove();
+	btnOuter.removeClass("file_uploading");
+	btnOuter.removeClass("file_uploaded");
+
+	var g = document.getElementById('inner');
+	g.setAttribute("transform", "scale('undefined'), translate(0,0)");
+});
+
+//-------------------------function to make image draggable and zoomable SVG main
+var zoomValue;
+var translateX=0;
+var translateY=0;
+var uploadedFile;
+var m = 0;
+
+function convertSVG(){
+	//alert('out in svg');
+	$('svg').each(function () {
+			var canvas, xml;
+			canvas = document.createElement("canvas");
+			canvas.className = "screenShotTempCanvas";
+			//convert SVG into a XML string
+			xml = (new XMLSerializer()).serializeToString(this);
+			// Removing the name space as IE throws an error
+			xml = xml.replace(/xmlns=\"http:\/\/www\.w3\.org\/2000\/svg\"/, '');
+			//draw the SVG onto a canvas
+			canvg(canvas, xml);
+			$(canvas).insertAfter(this);
+			//hide the SVG element
+			this.className = "tempHide";
+			$(this).hide();
+		});
+		html2canvas([document.getElementById('svg-id')], {
+			onrendered: function (canvas) {
+				var designPage = document.getElementById('mockupFinal');
+				designPage.appendChild(canvas);
+
+				//get canvas data for img tag
+				var baseData = canvas.toDataURL('image/png');
+				//put the data in input base64 
+				//alert(baseData);
+				$("#mockup_data").val(baseData);
+				var a = $("#mockup_data").val();
+				//alert('a');
+				//alert(a);
+
+				m = canvas.toDataURL('image/jpeg');
+				//alert('try m');	
+				//alert(m);
+				 
+				// AJAX call to send `data` to a PHP file that creates an image from the dataURI string and saves it to a directory on the server
+				//image data base64
+				//alert("will data");
+				//alert(data);
+			}
+		});
+}
+
+function createMockup(){
+	var a = document.getElementById('upload_file').value;
+	var b = document.getElementById('product-title').value;
+	var c = document.getElementById('price_input').value;
+	if (a == null || a == "", b == null || b == "", c == null || c == "" || c < 500) {
+		alert("Please Fill All Required Field");
+      	return false;		
+	}
+	else{
+		$('.hamberger_toggle').css('display','none');
+		var val = $('#main-product-color').val()
+		alert(val);
+		var div = document.getElementById('svg-id');
+		div.style.backgroundColor = val;
+		convertSVG();
+		get_product_colors();
+		//get select colors input 
+		var color_val = $('#product_colors').val();
+		//get view color input
+		var viewColor = $('#main-product-color').val();
+		//check if null or not
+		//alert('check colro');
+		{
+			if (color_val == ''||color_val == null ){
+			$('#product_colors').val('null');
+			}
+
+			else if (viewColor == '' || viewColor == null ){
+			$('#main-product-color').val('null');
+			}
+			else {
+			alert('no color');
+			}
+		}
+    	//replace all svgs with a temp canvas
+		
+		$('svg').each(function () {
+			var canvas, xml;
+			//alert('in in svg');
+			canvas = document.createElement("canvas");
+			canvas.className = "screenShotTempCanvas";
+			//convert SVG into a XML string
+			xml = (new XMLSerializer()).serializeToString(this);
+
+			// Removing the name space as IE throws an error
+			xml = xml.replace(/xmlns=\"http:\/\/www\.w3\.org\/2000\/svg\"/, '');
+
+			//draw the SVG onto a canvas
+			canvg(canvas, xml);
+			$(canvas).insertAfter(this);
+			//hide the SVG element
+			this.className = "tempHide";
+			$(this).hide();
+		});
+		//convertSVG();
+		html2canvas([document.getElementById('svg-id')], {
+			onrendered: function (canvas) {
+				var designPage = document.getElementById('mockupFinal');
+				designPage.appendChild(canvas);
+
+				//get canvas data for img tag
+				var baseData = canvas.toDataURL('image/png');
+
+				//put the data in input base64 
+				//alert(baseData);
+				$("#mockup_data").val(baseData);
+ 				//try to return data
+				//return baseData;
+
+			}
+		});
+		$('#mockup-btn').css('display','none');
+		document.getElementById("submit_btn").disabled = false;
+		$('#submit_btn').css('display','block');
+
+		//$container.find('.tempHide').show().removeClass('tempHide')
+	}		
+	//var a = $("#mockup_data").val(); //this is not getting the data
+	//$("#mockup_data").val(a);
+}
+
+function setvalue(data){
+	var e = document.getElementById('mockup_data');
+	e.value = data
+}
+
+function makeDraggable(evt) {
+            var svg = evt.target;
+            var selectedElement = false;
+
+            svg.addEventListener('mousedown', startDrag);
+            svg.addEventListener('mousemove', drag);
+            svg.addEventListener('mouseup', endDrag);
+            svg.addEventListener('mouseleave', endDrag);
+
+            svg.addEventListener('touchmove', startDrag);
+            svg.addEventListener('touchmove', drag);
+            svg.addEventListener('touchend ', endDrag);
+            svg.addEventListener('touchend ', endDrag);
+
+            function startDrag(evt) {
+                if (evt.target.classList.contains('draggable')) {
+                    selectedElement = evt.target;
+                    offset = getMousePosition(evt);
+                    offset.x -= parseFloat(selectedElement.getAttributeNS(null, "x"));
+                    offset.y -= parseFloat(selectedElement.getAttributeNS(null, "y"));
+                }
+            }
+
+            function drag(evt) {
+                if (selectedElement) {
+                    evt.preventDefault();
+                    var coord = getMousePosition(evt);
+
+
+                    selectedElement.setAttributeNS(null, "x", coord.x - offset.x);
+                    selectedElement.setAttributeNS(null, "y", coord.y - offset.y);
+					//--------------
+
+					translateX = (coord.x - offset.x);
+					translateY = (coord.y - offset.y);
+
+					var g = document.getElementById('inner');
+					g.setAttribute("transform", "scale("+zoomValue+"), translate("+(translateX)+", "+(translateY)+")");
+                    }
+            }
+
+            function endDrag(evt) {
+                selectedElement = null;
+            }
+
+            function getMousePosition(evt) {
+                var CTM = svg.getScreenCTM();
+                return {
+                    x: (evt.clientX - CTM.e) / CTM.a,
+                    y: (evt.clientY - CTM.f) / CTM.d
+                };
+            }
+}
+
+//zoomable
+var moveSlider = function(slider, direction) {
+    var value = slider.value;
+    var circle = document.getElementById("inner");
+
+    var coord = "c" + direction;
+    //circle.setAttributeNS(null, coord, value );
+
+	zoomValue = value;
+    var g = document.getElementById('inner');
+	g.setAttribute("transform", "scale("+zoomValue+"), translate("+(translateX)+", "+(translateY)+")");
+
+}
+
+//working with add + color //function
+function add_color_btn_toggle(v) {
+	var x = document.getElementById("add_color_block")
+  	x.classList.toggle("add-color-show");
+	
+	var v = document.getElementById("add_sign").innerHTML
+	if (v === '+'){
+		document.getElementById("add_sign").innerHTML = 'x';
+	}else{
+		document.getElementById("add_sign").innerHTML = '+';
+	}
+}
+
+//<---click on color button to Add color to product and show the color  ---------------------------------->
+function okColorAdded(clicked_id){
+	var p = document.getElementById(clicked_id);
+	var c = p.children[0];
+	var v = c.innerHTML;
+
+ 	if(clicked_id=='blue' && v==''){
+ 		//alert('in blu if');
+ 		var b = document.createElement("DIV");
+		b.className = "color-btn blue-Color added"; //add class to btn
+		$(".select-color").append(b);
+
+		//add-view color DIV
+		var view_color_btn = document.createElement("div");
+		view_color_btn.className = "color-btn blue-Color added";
+		view_color_btn.setAttribute("id", "view_blue");
+		view_color_btn.onclick = function(){
+			product_view_color = 'blue color';
+			$("#view_brown").html('');
+			$("#view_blue").html('☆');
+			$("#view_pink").html('');
+			$("#view_grey").html('');
+			$("#view_purple").html('');
+
+			$("#main-product-color").val("lightblue");
+		}
+		$("#view_color").append(view_color_btn);
+
+		//change the product color on add
+		$('#svg-id').css({'background-color':'lightblue'});
+
+		//add blue-li
+		var $li = $("<li>", {id: "li-blue", "class": "see-product-color"});
+		var $btn = $("<div>", {id: "btn-blue","class": "color-btn blue-Color li-btn", onclick:"changeColor(this.id)"});
+		$(".see-product-color-ul").append($li);
+		//add btn to li
+		$("#li-blue").append($btn);
+
+
+		document.getElementById("blue_span").innerHTML='✓'; //change btn sign
+	}
+	else if((clicked_id=='blue' && v=='✓')){
+ 		//alert('in blu else', v);
+		document.getElementsByClassName("color-btn blue-Color added")[0].remove();
+		document.getElementById("blue_span").innerHTML='';
+
+		//remove the changed product color
+		$('#svg-id').css({'background-color':'white'});
+
+		//remove btn from see-product-color
+		$("#li-blue").remove();
+		$("#view_blue").remove();
+
+	}
+	else if(clicked_id=='brown' && v==''){
+		//alert('in brow if');
+ 		var b = document.createElement("div");
+		b.className = "color-btn brown-Color added";
+		var list = document.getElementsByClassName("select-color")[0];
+		list.appendChild(b);
+
+		//view color DIV
+		var view_color_btn = document.createElement("div");
+		view_color_btn.className = "color-btn brown-Color added";
+		view_color_btn.setAttribute("id", "view_brown");
+		view_color_btn.onclick = function(){
+			product_view_color = 'brown color';
+			$("#view_brown").html('☆');
+			$("#view_blue").html('');
+			$("#view_pink").html('');
+			$("#view_grey").html('');
+			$("#view_purple").html('');
+
+			$("#main-product-color").val("brown");
+		}
+		$("#view_color").append(view_color_btn);
+
+		//change the product color on add
+		$('#svg-id').css({'background-color':'brown'});
+
+		//add blue-li
+		var $li = $("<li>", {id: "li-brown", "class": "see-product-color"});
+		var $btn = $("<div>", {id: "btn-brown","class": "color-btn brown-Color li-btn", onclick:"changeColor(this.id)"});
+		$(".see-product-color-ul").append($li);
+		//add btn to li
+		$("#li-brown").append($btn);
+
+
+		document.getElementById('brown_span').innerHTML='✓';
+	}
+	else if((clicked_id=='brown' && v=='✓')){
+		//alert('in brown else');
+		document.getElementsByClassName("color-btn brown-Color added")[0].remove();
+		document.getElementById('brown_span').innerHTML='';
+
+		//remove the changed product color
+		$('#svg-id').css({'background-color':'white'});
+
+		//remove btn from see-product-color
+		$("#li-brown").remove();
+		$('#view_brown').remove();
+	}
+	else if(clicked_id=='grey' && v==''){
+		//alert('in grey if');
+ 		var b = document.createElement("div");
+		b.className = "color-btn grey-Color added";
+		var list = document.getElementsByClassName("select-color")[0];
+		list.appendChild(b);
+
+		//view color DIV
+		var view_color_btn = document.createElement("div");
+		view_color_btn.className = "color-btn grey-Color added";
+		view_color_btn.setAttribute("id", "view_grey");
+		view_color_btn.onclick = function(){
+			product_view_color = 'grey color';
+			$("#view_brown").html('');
+			$("#view_blue").html('');
+			$("#view_pink").html('');
+			$("#view_grey").html('☆');
+			$("#view_purple").html('');
+
+			$("#main-product-color").val("grey");
+		}
+		$("#view_color").append(view_color_btn);
+
+		//change the product color on add
+		$('#svg-id').css({'background-color':'grey'});
+
+		//add blue-li
+		var $li = $("<li>", {id: "li-grey", "class": "see-product-color"});
+		var $btn = $("<div>", {id: "btn-grey","class": "color-btn grey-Color li-btn", onclick:"changeColor(this.id)"});
+		$(".see-product-color-ul").append($li);
+		//add btn to li
+		$("#li-grey").append($btn);
+
+
+		document.getElementById('grey_span').innerHTML='✓';
+	}
+	else if((clicked_id=='grey' && v=='✓')){
+		//alert('in grey else');
+		document.getElementsByClassName("color-btn grey-Color added")[0].remove();
+		document.getElementById('grey_span').innerHTML='';
+
+		//remove the changed product color
+		$('#svg-id').css({'background-color':'white'});
+
+		//remove btn from see-product-color
+		$("#li-grey").remove();
+		$("#view_grey").remove();
+	}
+	else if(clicked_id=='pink' && v==''){
+		//alert('in pink if');
+ 		var b = document.createElement("div");
+		b.className = "color-btn pink-Color added";
+		var list = document.getElementsByClassName("select-color")[0];
+		list.appendChild(b);
+
+		//view color DIV
+		var view_color_btn = document.createElement("div");
+		view_color_btn.className = "color-btn pink-Color added";
+		view_color_btn.setAttribute("id", "view_pink");
+
+		view_color_btn.onclick = function(){
+			product_view_color = 'pink color';
+			$("#view_brown").html('');
+			$("#view_blue").html('');
+			$("#view_pink").html('☆');
+			$("#view_grey").html('');
+			$("#view_purple").html('');
+
+			$("#main-product-color").val("pink");
+		}
+		$("#view_color").append(view_color_btn);
+
+		//change the product color on add
+		$('#svg-id').css({'background-color':'pink'});
+
+		//add blue-li
+		var $li = $("<li>", {id: "li-pink", "class": "see-product-color"});
+		var $btn = $("<div>", {id: "btn-pink","class": "color-btn pink-Color li-btn", onclick:"changeColor(this.id)"});
+		$(".see-product-color-ul").append($li);
+		//add btn to li
+		$("#li-pink").append($btn);
+
+
+		document.getElementById('pink_span').innerHTML='✓';
+	}
+	else if((clicked_id=='pink' && v=='✓')){
+		//alert('in pink else');
+		document.getElementsByClassName("color-btn pink-Color added")[0].remove();
+		document.getElementById('pink_span').innerHTML='';
+
+		//remove the changed product color
+		$('#svg-id').css({'background-color':'white'});
+
+		//remove btn from see-product-color
+		$("#li-pink").remove();
+		$("#view_pink").remove();
+	}
+	else if(clicked_id=='purple' && v==''){
+		//alert('in pink if');
+ 		var b = document.createElement("div");
+		b.className = "color-btn purple-Color added";
+		var list = document.getElementsByClassName("select-color")[0];
+		list.appendChild(b);
+
+		//view color DIV
+		var view_color_btn = document.createElement("div");
+		view_color_btn.className = "color-btn purple-Color added";
+		view_color_btn.setAttribute("id", "view_purple");
+
+		view_color_btn.onclick = function(){
+			product_view_color = 'purple color';
+			$("#view_brown").html('');
+			$("#view_blue").html('');
+			$("#view_pink").html('');
+			$("#view_grey").html('');
+			$("#view_purple").html('☆');
+
+			$("#main-product-color").val("purple");
+		}
+		$("#view_color").append(view_color_btn);
+
+		//change the product color on add
+		$('#svg-id').css({'background-color':'purple'});
+
+		//add blue-li
+		var $li = $("<li>", {id: "li-purple", "class": "see-product-color"});
+		var $btn = $("<div>", {id: "btn-purple","class": "color-btn purple-Color li-btn", onclick:"changeColor(this.id)"});
+		$(".see-product-color-ul").append($li);
+		//add btn to li
+		$("#li-purple").append($btn);
+
+
+		document.getElementById('purple_span').innerHTML='✓';
+	}
+	else if((clicked_id=='purple' && v=='✓')){
+		//alert('in pink else');
+		document.getElementsByClassName("color-btn purple-Color added")[0].remove();
+		document.getElementById('purple_span').innerHTML='';
+
+		//remove the changed product color
+		$('#svg-id').css({'background-color':'white'});
+
+		//remove btn from see-product-color
+		$("#li-purple").remove();
+		$("#view_purple").remove();
+	}
+	else{
+		alert('brr');
+	}
+}
+
+{% comment %} change product color on side-color-btn click {% endcomment %}
+function changeColor(color_id){
+	if (color_id == "btn-pink"){
+		$("#imag-div").css("background-color", "pink");
+	}
+	else if(color_id == "btn-brown"){
+		$("#imag-div").css("background-color", "brown");
+	}
+	else if(color_id == "btn-grey"){
+		$("#imag-div").css("background-color", "grey");
+	}
+	else if(color_id == "btn-blue"){
+		$("#imag-div").css("background-color", "lightblue");
+	}
+	else if(color_id == "btn-purple"){
+		$("#imag-div").css("background-color", "purple");
+	}
+}
+
+//price input function------------------------------------------
+$('input[name="price"]').keyup(function(){
+	//if (/\D/g.test(this.value)){
+	//	// Filter non-digits from input value.
+	//	this.value = this.value.replace(/\D/g, '');
+	//}
+	var $price = $(this).val();
+	var m = 500;
+	var $profit = $price - m;
+
+  	//console.log(($profit));
+	if($profit<0){
+		$("#show_profit").css("color", 'red');
+		$("#show_profit").text('no profit');
+	}
+	else{
+		$("#show_profit").css("color", 'green');
+		$("#show_profit").text('₹'+$profit+' profit/scale');
+	}
+	
+});
+
+//input product colors function-------
+function get_product_colors(){
+	var colors = [];
+	$(".see-product-color").each(function(i){
+		var $i = $(this).attr('id');
+		alert($i);
+		colors.push($i);
+	});
+	//alert(colors);
+	$("#product_colors").val(colors);
+}
+
+//dataURL to input image file
+function dataURLtoFile(dataurl, filename) {
+ 
+        var arr = dataurl.split(','),
+            mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), 
+            n = bstr.length, 
+            u8arr = new Uint8Array(n);
+            
+        while(n--){
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        
+        return new File([u8arr], filename, {type:mime});
+    }
+    
+    {% comment %} //Usage example:
+    var file = dataURLtoFile('data:text/plain;base64,aGVsbG8gd29ybGQ=','hello.txt');
+    console.log(file); {% endcomment %}
+
+//mockup canvas final to image 
+function mockupCanvasToImage(){
+
+	var canvas = document.getElementById('done');
+	alert('got canvas');
+	alert(canvas);
+	var img_data = canvas.toDataURL("image/png");
+	var img = document.createElement('img');
+	img.src = img_data
+	document.body.appendChild(img);
+}
+
+</script> 
+{% endblock js %}

@@ -1,0 +1,347 @@
+{% extends 'base_dashboard.html' %}
+{% load static %}
+
+{% block nav-Create %}
+	<a class="sidebar_link active" href="{% url 'createDashboard' %}">
+		<li class="menu__item">
+			<span class="menu__icon">
+				<i class="fas fa-pen-square"></i>
+			</span>Create
+		</li>
+	</a>
+{% endblock nav-Create %}
+
+{% block content %}
+	<style>
+		.product-grid{
+			font-family: 'Poppins', sans-serif;
+			text-align: center;
+			border-radius: 15px;
+			border: 1px solid #e7e7e7;
+			overflow: hidden;
+			transition: all 0.4s ease-out;
+		}
+		.product-grid:hover{ box-shadow: 5px 10px 30px rgba(0, 0, 0, 0.1); }
+		.product-grid .product-image{ position: relative; }
+		.product-grid .product-image a.image{ display: block; }
+		.product-grid .product-image img{
+			width: 100%;
+			height: auto;
+		}
+		.product-grid .product-discount-label{
+			color: #fff;
+			background: #78a206;
+			font-size: 14px;
+			font-weight: 400;
+			text-transform: uppercase;
+			padding: 2px 8px;
+			border-radius: 5px;
+			position: absolute;
+			top: 12px;
+			left: 12px;
+		}
+		.product-grid .product-links{
+			width: 145px;
+			padding: 0;
+			margin: 0;
+			list-style: none;
+			opacity: 0;
+			transform: translateX(-50%) translateY(-50%);
+			position: absolute;
+			top: 65%;
+			left: 50%;
+			transition: all 0.4s ease 0s;
+		}
+		.product-grid:hover .product-links{
+			opacity: 1;
+			top: 50%;
+		}
+		.product-grid .product-links li{
+			display: inline-block;
+			margin: 0 2px;
+		}
+		.product-grid .product-links li a{
+			color: #2c2c2c;
+			background: #fff;
+			font-size: 16px;
+			line-height: 42px;
+			width: 40px;
+			height: 40px;
+			border-radius: 50px;
+			display: block;
+			position: relative;
+			transition: all 0.4s ease-out 0s;
+		}
+		.product-grid .product-links li a:hover{
+			color: #fff;
+			background: #78a206;
+			box-shadow: 1px 1px 30px 0 rgba(0, 0, 0, 0.2);
+		}
+
+		/* buton select */
+		button.select-btn-product {
+			border-radius: 4px;
+			background-color: #5ca1e1;
+			border: none;
+			color: #fff;
+			text-align: center;
+			font-size: 22px;
+			/* padding: 16px;
+			width: 220px; */
+			transition: all 0.5s;
+			cursor: pointer;
+			margin: 36px;
+			box-shadow: 0 10px 20px -8px rgba(0, 0, 0,.7);
+			display: inline-block;
+			position: relative;
+		}
+
+		.product-grid .product-content{
+			padding: 12px 12px 15px;
+			position: relative;
+		}
+		.product-grid .rating{
+			padding: 0;
+			margin: 0 0 8px;
+			list-style: none;
+		}
+		.product-grid .rating li{
+			color: #78a206;
+			font-size: 14px;
+		}
+		.product-grid .rating .far{ color: #808080; }
+		.product-grid .title{
+			font-size: 18px;
+			font-weight: 600;
+			text-transform: uppercase;
+			margin: 0 0 15px;
+		}
+		.product-grid .title a{
+			color: #2c2c2c;
+			transition: all 0.3s ease 0s;
+		}
+		.product-grid .title a:hover{ color: #78a206; }
+		.product-grid .price{
+			color: #78a206;
+			font-size: 17px;
+			font-weight: 600;
+			display: block;
+			transition: all 0.4s ease-in-out;
+		}
+		.product-grid .price span{
+			color: #999;
+			font-weight: 500;
+			text-decoration: line-through;
+		}
+		.product-grid:hover .price{ opacity: 0; }
+		.product-grid .add-to-cart{
+			color: #fff;
+			background-color: #78a206;
+			font-size: 16px;
+			font-weight: 500;
+			text-transform: uppercase;
+			line-height: 40px;
+			width: 140px;
+			height: 40px;
+			border-radius: 50px;
+			opacity: 0;
+			transform: translateX(-50%);
+			position: absolute;
+			bottom: 50px;
+			left: 50%;
+			transition: all .4s ease-out;
+		}
+		.product-grid .add-to-cart:hover{ background-color: #2f2f2f; }
+		.product-grid:hover .add-to-cart{
+			opacity: 1;
+			bottom: 8px;
+		}
+		@media screen and (max-width:1200px){
+			.product-grid{ margin: 0 0 30px; }
+		}
+		/* input submit disable*/
+		{% comment %} input.title{
+			display:none;
+		} 
+		input#unisex-input {
+			display: none;
+		}
+		input#mensTshirt-input {
+			display: none;
+		}
+		input#womensTshirt-input {
+			display: none;
+		}
+		input#kidsTshirt-input {
+			display: none;
+		} {% endcomment %}
+		/* create page submit button ------------------------*/
+		input.sumit-btn{
+			/* padding: 15px; */
+			/* background: #000; */
+			border:0;
+			outline: none;
+			color: #000;
+			text-transform: uppercase;
+			font-family: helvetica;
+			font-size: 12px;
+			letter-spacing: 3px;
+			position: relative;
+			transition:         all .4s cubic-bezier(0.645, 0.045, 0.355, 1);
+			cursor: pointer;
+			display: block;
+			margin: auto;
+		}
+		input.sumit-btn:hover{
+			color: orange;
+		}
+
+		/* new */
+		.row.types_of_products {
+			margin-top: 40px;
+			margin-bottom: 40px;
+		}
+			
+
+	</style>
+	 
+	<main class="main">
+		<header class="main__header">
+			<div class="main__user">
+				<div class="main__avatar">
+					<img src="https://assets.codepen.io/2709552/small-avatar.png" />
+				</div>
+				<div class="main__title">
+					<h5>{{request.user}}</h5>
+				</div>
+			</div>
+		</header>
+		<div class="header"><h1>Select Product Type</h1></div>
+		<form method="POST" action=""> {% csrf_token %}
+			<div class="row types_of_products">
+				<div class="col-md-3 col-sm-6">
+					{% comment %} <input type="text" name="title" id="unisex-input"> {% endcomment %}
+						<div class="product-grid">
+							<div class="product-image">
+								{% comment %} <a class="title-name" onclick="getTitle(this.id)" href="{% url 'design' %}" id="unisex"> {% endcomment %}
+									<img class="pic-1" src="{% static 'images/unisexTshirt.jpg' %}">
+								{% comment %} </a> {% endcomment %}
+							</div>
+							<div class="product-content">
+								<h3 class="title" id="unisex-title">
+									<a class="title-name">
+										<input type="submit" class="sumit-btn  " name="unisex" value="Unisex T-shirt"/>
+										{% comment %} <button class="sumit-btn">
+											Unisex T-shirt
+										</button> {% endcomment %}
+									</a>
+								</h3>
+							</div>
+						</div>
+					{% comment %} </form> {% endcomment %}
+				</div>
+				<div class="col-md-3 col-sm-6">
+					{% comment %} <form method="POST" action=""> {% csrf_token %}
+					<input type="text" name="title" id="mensTshirt-input"> {% endcomment %}
+						<div class="product-grid">
+							<div class="product-image">
+								{% comment %} <a class="title-name" onclick="getTitle(this.id)" id="mens" href = "{% url 'design' %}" > {% endcomment %}
+									<img class="pic-1" src="{% static 'images/mensT-shirt.jpg' %}">
+								{% comment %} </a> {% endcomment %}
+								<!--<span class="product-discount-label">-33%</span>-->
+							</div>
+							<div class="product-content">
+
+								<h3 class="title" id="mensTshirt-title">
+									<a class="title-name">
+										<input type="submit" class="sumit-btn  " name="mens" value="Mens T-shirt"/>
+										{% comment %} <button class="sumit-btn">
+											<input type="submit" class="title" name="mens" value=""/>Mens T-shirt
+										</button> {% endcomment %}
+									</a>
+								</h3>
+							</div>
+						</div>
+					{% comment %} </form> {% endcomment %}
+				</div>
+				<div class="col-md-3 col-sm-6">
+					{% comment %} <form method="POST" action=""> {% csrf_token %} {% endcomment %}
+					{% comment %} <input type="text" name="title" id="womensTshirt-input"> {% endcomment %}
+						<div class="product-grid">
+							<div class="product-image">
+								{% comment %} <a class="title-name" href="{% url 'design' %}" onclick="getTitle(this.id)" id="women" > {% endcomment %}
+									<img class="pic-1" src="{% static 'images/womenT-shirt.jpg' %}">
+								{% comment %} </a> {% endcomment %}
+								<!--<span class="product-discount-label">-33%</span>-->
+							</div>
+							<div class="product-content">
+								<h3 class="title" id="womensTshirt-title">
+									<a class="title-name">
+									<input type="submit" class="sumit-btn" name="women" value="Womens T-shirt"/>
+										{% comment %} <button class="sumit-btn">
+											Womens T-shirt
+										</button> {% endcomment %}
+									</a>
+								</h3>
+							</div>
+						</div>
+					{% comment %} </form> {% endcomment %}
+				</div>
+				<div class="col-md-3 col-sm-6">
+
+				{% comment %} <form method="POST" action=""> {% csrf_token %} {% endcomment %}
+				{% comment %} <input type="text" name="title" id="kidsTshirt-input"> {% endcomment %}
+
+					<div class="product-grid">
+						<div class="product-image">
+							{% comment %} <a class="title-name" href="{% url 'design' %}" onclick="getTitle(this.id)" id="kidsBaby" > {% endcomment %}
+								<img class="pic-1" src="{% static 'images/kidsBaby.jpg' %}">
+							{% comment %} </a> {% endcomment %}
+							<!--<span class="product-discount-label">-33%</span>-->
+						</div>
+						<div class="product-content">
+							<h3 class="title" id="kidsTshirt-title">
+								<a class="title-name">
+									<input type="submit" class="sumit-btn" name="kids" value="Kids Baby T-shirt"/>
+									{% comment %} <button class="sumit-btn">
+										Kids & Baby T-shirt
+									</button> {% endcomment %}
+								</a>
+							</h3>					
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	</main>
+
+{% endblock content%}
+
+{% block js %}
+<script>
+//on document ready
+$( document ).ready(function() {
+    
+});
+
+$("h3").click(function(){
+	id = $(this).attr('id');
+	if(id=="unisex-title"){
+		$("#unisex-input").val("Unisex T-shirt");
+	}
+	else if(id=="mensTshirt-title"){
+		$("#mensTshirt-input").val("Mens T-shirt")
+	}
+	else if(id=="womensTshirt-title"){
+		$("#womensTshirt-input").val("Women T-shirt")
+	}
+	else if(id=="kidsTshirt-title"){
+		$("#kidsTshirt-input").val("kids T-shirt")
+	}
+});
+
+
+
+</script>
+{% endblock js %} 

@@ -1,0 +1,67 @@
+{% block navbar %}
+
+<!--done with navbar-->
+{% endblock navbar %}
+<div class="container">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{% url 'home' %}">TeeShop</a>
+    <button class="navbar-toggler"
+     type="button" 
+     data-toggle="collapse" 
+     data-target="#navbarSupportedContent" 
+     aria-controls="navbarSupportedContent" 
+     aria-expanded="false" 
+     aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        {% comment %} <li class="nav-item active">
+          <a class="nav-link" href="#"> <span class="sr-only">(current)</span></a>
+        </li> {% endcomment %}
+        <li class="nav-item ml-3 mr-3">
+          <a class="nav-link" href="#">Shop</a>
+        </li>
+        {% comment %} <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Dropdown
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
+        </li> {% endcomment %}
+        <li class="nav-item ml-3 mr-3">
+          <a class="nav-link" href="{% url 'createDashboard' %}">Sell</a>
+        </li>
+        <li class="nav-item ml-3 mr-3">
+          <a class="nav-link" href="#">How it works</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ms-auto">
+         {% if user.is_authenticated %}
+          <li class="nav-item ml-3 mr-3">
+            {% comment %} <span><p id="hello_user">Go To DashBoard {{request.user}}</p></span> {% endcomment %}
+           <a class="nav-link" href="{% url 'homeDashboard' %}">Go To Dashboard</a>
+          </li>
+          <li class="nav-item ml-3 mr-3 ">
+            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+          </li>
+        {% else %}
+          <li class="nav-item ml-3 mr-3">
+            <a class="nav-link" href="{% url 'login' %}">Login</a>
+          </li>
+          <li class="nav-item ml-3 mr-3">
+            <a class="nav-link" href="{% url 'register' %}">Sign Up</a>
+          </li>
+        {% endif %}
+      </ul>
+       
+    </div>
+  </nav>
+</div>
+
+  
